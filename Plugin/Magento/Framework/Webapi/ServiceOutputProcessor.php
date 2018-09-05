@@ -4,7 +4,7 @@
  * Since: 2018
  */
 
-namespace Flancer32\LogApi\Plugin\Framework\Webapi;
+namespace Flancer32\LogApi\Plugin\Magento\Framework\Webapi;
 
 /**
  * Log REST response data.

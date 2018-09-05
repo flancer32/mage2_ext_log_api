@@ -4,7 +4,7 @@
  * Since: 2018
  */
 
-namespace Flancer32\LogApi\Plugin\Webapi\Controller;
+namespace Flancer32\LogApi\Plugin\Magento\Webapi\Controller;
 
 /**
  * Log API paths processing.
