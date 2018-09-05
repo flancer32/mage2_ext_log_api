@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="dev">
+            <group id="flancer32_log_api" translate="label" type="text"
+                   sortOrder="1000" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Advanced Logging Settings</label>
+                <comment>
+                    <![CDATA[<a href="https://github.com/flancer32/mage2_ext_log_api" target="_blank">More...</a>]]>
+                </comment>
+                <field id="enabled" translate="label" type="select"
+                       sortOrder="200" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Web API logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>See API logs in '${MAGE_ROOT}/var/log/api.log'</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

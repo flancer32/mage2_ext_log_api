@@ -1,2 +1,3 @@
 # mage2_ext_log_api
-Magento 2 REST API activity logger 
+
+Add ability to Magento 2 to log REST API requests/responses.
