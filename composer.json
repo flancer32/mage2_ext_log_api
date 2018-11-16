@@ -1,6 +1,6 @@
 {
   "name": "flancer32/mage2_ext_log_api",
-  "description": "Magento2: prevent session creation for bots & crawlers.",
+  "description": "Magento 2 activities logger (API, JS errors)",
   "type": "magento2-module",
   "homepage": "https://github.com/flancer32/mage2_ext_log_api",
   "license": "GPL-3.0-only",
