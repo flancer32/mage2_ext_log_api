@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="standard">
+        <!-- see "\Flancer32\LogApi\Config::ROUTE_FRONT" -->
+        <route id="fl32log" frontName="fl32log">
+            <module name="Flancer32_LogApi"/>
+        </route>
+    </router>
+</config>

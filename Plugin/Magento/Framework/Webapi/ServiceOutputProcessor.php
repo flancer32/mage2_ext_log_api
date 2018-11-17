@@ -41,7 +41,7 @@ class ServiceOutputProcessor
         try {
             $json = json_encode($result);
             if (
-                ($serviceClassName != 'Magento\Integration\Api\AdminTokenServiceInterface') &&
+                ($serviceClassName != \Magento\Integration\Api\AdminTokenServiceInterface::class) &&
                 ($serviceMethodName != 'createAdminAccessToken')
             ) {
                 $msg = "Response '$serviceClassName::$serviceMethodName()': ";

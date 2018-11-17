@@ -3,18 +3,24 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="dev">
+        <section id="system">
             <group id="flancer32_log_api" translate="label" type="text"
-                   sortOrder="1000" showInDefault="1" showInWebsite="0" showInStore="0">
+                   sortOrder="1024" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Advanced Logging Settings</label>
                 <comment>
                     <![CDATA[<a href="https://github.com/flancer32/mage2_ext_log_api" target="_blank">More...</a>]]>
                 </comment>
-                <field id="enabled" translate="label" type="select"
-                       sortOrder="200" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="web_enabled" translate="label" type="select"
+                       sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Web API logging</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>See API logs in '${MAGE_ROOT}/var/log/api.log'</comment>
+                </field>
+                <field id="js_enabled" translate="label" type="select"
+                       sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable JS errors logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Save JS errors in browser's local storage. See saved errors on '/fl32/logger/jserrors/' page.</comment>
                 </field>
             </group>
         </section>

@@ -6,8 +6,11 @@
 
 namespace Flancer32\LogApi\Helper;
 
+use Magento\Framework\App\Config\ScopeConfigInterface as AScopeCfg;
+
 /**
- * Helper to get configuration parameters related to the module.
+ * Helper to get store configuration parameters related to the module.
+ *
  * @SuppressWarnings(PHPMD.BooleanGetMethodName)
  */
 class Config
@@ -26,13 +29,29 @@ class Config
     }
 
     /**
-     * Web API logging activity.
+     * JS errors logging activity.
      *
+     * @param string $scopeType
+     * @param string $scopeCode
      * @return bool
      */
-    public function getEnabled()
+    public function getJsEnabled($scopeType = AScopeCfg::SCOPE_TYPE_DEFAULT, $scopeCode = null)
     {
-        $result = $this->scopeConfig->getValue('dev/flancer32_log_api/enabled');
+        $result = $this->scopeConfig->getValue('system/flancer32_log_api/js_enabled', $scopeType, $scopeCode);
+        $result = filter_var($result, FILTER_VALIDATE_BOOLEAN);
+        return $result;
+    }
+
+    /**
+     * Web API logging activity.
+     *
+     * @param string $scopeType
+     * @param string $scopeCode
+     * @return bool
+     */
+    public function getWebEnabled($scopeType = AScopeCfg::SCOPE_TYPE_DEFAULT, $scopeCode = null)
+    {
+        $result = $this->scopeConfig->getValue('system/flancer32_log_api/web_enabled', $scopeType, $scopeCode);
         $result = filter_var($result, FILTER_VALIDATE_BOOLEAN);
         return $result;
     }

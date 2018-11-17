@@ -1,0 +1,190 @@
+<?php
+/**
+ * Authors: Alex Gusev <alex@flancer64.com>
+ * Since: 2018
+ *
+ * @see \Flancer32\LogApi\Controller\Js\View
+ */
+/** @var \Flancer32\LogApi\Block\Js\Logger $block */
+$storageKey = $block->getStorageKey();
+/* TODO: remove tmp solution for backward compatibility */
+$storageKeyOrig = $block->getStorageKeyOrig();
+?>
+<html>
+
+<head>
+    <style>
+        .batch-url {
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+            color: #3c763d;
+            background-color: #7bf0a0;
+        }
+
+        .batch-errors {
+            padding: 15px;
+        }
+
+        .batch-error-row {
+            margin-top: 5px;
+            padding: 15px;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+            color: #3c763d;
+            background-color: #dff0d8;
+        }
+    </style>
+    <script>
+        const BATCH_ERRORS = "batch-errors";
+        const BATCH_URL = "batch-url";
+        const ERROR_ROWS = "errorRows";
+        const NO_DATA_KEY = "noDataKey";
+        const SECTION_ERRORS_EMPTY = "sectionErrorsEmpty";
+        const SECTION_ERRORS_EXIST = "sectionErrorsExist";
+        const storage = localStorage;
+        const STORAGE_KEY = "<?= $storageKey ?>";
+        const STORAGE_KEY_ORIG = "<?= $storageKeyOrig ?>";
+        const TMPL_BATCH_ROW = "tmplBatchRow";
+        const TMPL_ERRORS_BATCH = "tmplErrorsBatch";
+
+        /**
+         * Access local storage data after landing HTML will be loaded.
+         */
+        function onLoad() {
+            /* get data from */
+            let stored = storage.getItem(STORAGE_KEY_ORIG);
+            if (stored) {
+                storage.setItem(STORAGE_KEY, stored);
+                storage.removeItem(STORAGE_KEY_ORIG);
+            }
+            stored = storage.getItem(STORAGE_KEY);
+            if (stored) {
+                displayErrors(stored);
+            } else {
+                displayNoErrors();
+            }
+        }
+
+        /**
+         * Clear local storage then re-load page.
+         */
+        function actClearStorage() {
+            const json = JSON.stringify({});
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+
+        /**
+         * Switch on "display found errors" section.
+         */
+        function displayErrors(stored) {
+            /* working vars */
+            const elSection = document.getElementById(SECTION_ERRORS_EXIST);
+            const elRows = document.getElementById(ERROR_ROWS);
+            const tmplBatch = document.getElementById(TMPL_ERRORS_BATCH);
+            const tmplBatchRow = document.getElementById(TMPL_BATCH_ROW);
+
+            /* parse stored errors and compose DOM elements */
+            let errors = JSON.parse(stored);
+            for (let url in errors) {
+                /* create butch element related to the page URL */
+                const elBatch = tmplBatch.cloneNode(true);
+                const elBatchUrl = elBatch.querySelector("." + BATCH_URL);
+                const elBatchRows = elBatch.querySelector("." + BATCH_ERRORS);
+                elBatchUrl.innerHTML = url;
+
+                /* add errors to the batch */
+                const oneBatch = errors[url];
+                displayErrorsBatch(oneBatch, elBatchRows, tmplBatchRow);
+
+                /* add URL batch element to UI */
+                elRows.appendChild(elBatch);
+            }
+
+            /* Switch on errors section on UI and switch off templates */
+            elSection.style.display = "block";
+        }
+
+        /**
+         * Compose DOM element with errors from the batch corresponed to the URL.
+         */
+        function displayErrorsBatch(oneBatch, elBatchRows, tmplBatchRow) {
+            for (let i in oneBatch) {
+                const elBatchRow = tmplBatchRow.cloneNode(true);
+
+                /* replace ID of the row template element  */
+                elBatchRow.id = elBatchRow.id + "_" + i;
+
+                /* get row template nested elements */
+                const elRowIndex = elBatchRow.querySelector("#batchRowIndex");
+                const elRowError = elBatchRow.querySelector("#batchRowError");
+                const elRowFile = elBatchRow.querySelector("#batchRowFile");
+                const elRowLine = elBatchRow.querySelector("#batchRowLine");
+
+                /* replace IDs of the row template nested elements */
+                elRowIndex.id = elRowIndex.id + "_" + i;
+                elRowError.id = elRowError.id + "_" + i;
+                elRowFile.id = elRowFile.id + "_" + i;
+                elRowLine.id = elRowLine.id + "_" + i;
+
+                /* put data into row template nested elements */
+                const one = oneBatch[i];
+                elRowIndex.innerHTML = one.date;
+                elRowError.innerHTML = one.error;
+                elRowFile.innerHTML = one.file;
+                elRowLine.innerHTML = one.line;
+
+                /* add row element to the batch */
+                elBatchRows.appendChild(elBatchRow);
+            }
+        }
+
+        /**
+         * Switch on "no errors found" section.
+         */
+        function displayNoErrors() {
+            const elSection = document.getElementById(SECTION_ERRORS_EMPTY);
+            const elKey = document.getElementById(NO_DATA_KEY);
+            elKey.innerText = STORAGE_KEY;
+            elSection.style.display = "block";
+        }
+
+    </script>
+</head>
+
+<body onload="onLoad()">
+
+<!-- SECTION: actions -->
+<div id="actions" style="margin-bottom: 5px;">
+    <button id="actionClear" onclick="actClearStorage()">Clear Storage</button>
+</div>
+
+<!-- SECTION: no errors found -->
+<div id="sectionErrorsEmpty" style="display: none">
+    <span>There are no errors in local storage for key "<b><span id="noDataKey"></span></b>".</span>
+</div>
+
+<!-- SECTION: display found errors -->
+<div id="sectionErrorsExist" style="display: none">
+    <div id="errorRows"><!-- array of "tmplErrorsBatch" elements here --></div>
+</div>
+
+<!-- SECTION: templates -->
+<div style="display: none">
+    <!-- Template for the batch of the URL errors -->
+    <div id="tmplErrorsBatch">
+        <div class="batch-url"></div>
+        <div class="batch-errors"><!-- array of "tmplBatchRow" elements here --></div>
+    </div>
+
+    <div id="tmplBatchRow" class="batch-error-row">
+        <div><span id="batchRowIndex"></span>: <span id="batchRowError"></span></div>
+        <div><span>File:</span><span id="batchRowFile"></span>:<span id="batchRowLine"></span></div>
+    </div>
+</div>
+
+</body>
+
+</html>

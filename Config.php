@@ -14,4 +14,6 @@ class Config
     const MODULE = self::MODULE_VENDOR . '_' . self::MODULE_PACKAGE;
     const MODULE_PACKAGE = 'LogApi';
     const MODULE_VENDOR = 'Flancer32';
+    /** see ./etc/frontend/routes.xml */
+    const ROUTE_FRONT = 'fl32log';
 }

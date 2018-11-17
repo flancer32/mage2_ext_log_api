@@ -10,7 +10,10 @@
       "email": "alex@flancer64.com"
     }
   ],
-  "require": {},
+  "require": {
+    "php": ">=7.1",
+    "monolog/monolog": ">=1"
+  },
   "autoload": {
     "files": [
       "registration.php"

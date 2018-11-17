@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- see "./magento/module-ui/view/base/layout/default.xml" -->
+        <referenceContainer name="after.body.start">
+            <block class="Flancer32\LogApi\Block\Js\Logger"
+                   name="fl32JsLogger"
+                   template="Flancer32_LogApi::js/logger.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

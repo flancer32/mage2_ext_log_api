@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "id": "https://github.com/flancer32/mage2_ext_log_api/tree/master/etc/js/schema/error.json",
+  "type": "object",
+  "patternProperties": {
+    "^http": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "date": {"type": "string"},
+            "error": {"type": "string"},
+            "file": {"type": "string"},
+            "line": {"type": "integer"}
+          },
+          "required": ["date", "error", "file", "line"]
+        }
+      ]
+    }
+  }
+}

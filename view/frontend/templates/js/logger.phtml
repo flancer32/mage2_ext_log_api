@@ -1,0 +1,59 @@
+<?php
+/**
+ * Template to add "window.onerror()" handler to save JS errors in local storage.
+ */
+/** @var $block \Flancer32\LogApi\Block\Js\Logger */
+$storageKey = $block->getStorageKey();
+/* TODO: remove tmp solution for backward compatibility */
+$storageKeyOrig = $block->getStorageKeyOrig();
+$maxSize = $block->getLocalStorageMaxSize();
+?>
+<?php if ($block->isOriginalLoggingEnabled()): ?>
+    <!-- Please, disable session storage logging to enable local storage logging for JS errors. -->
+    <!-- see "Store / Configuration / Advanced / Developer / JavaScript Settings / Log JS Errors to Session Storage" -->
+<?php else: ?>
+    <?php if ($block->isLocalStorageEnabled()): ?>
+        <script>
+            /**
+             * Save errors to local storage.
+             * Structure for error log see in "flancer32/mage2_ext_log_api/etc/js/schema/error.json".
+             *
+             * @param msg
+             * @param url
+             * @param line
+             */
+            window.onerror = function (msg, url, line) {
+                const URL_CURRENT = window.location.href;
+                const STORAGE_KEY = "<?= $storageKey?>";
+                const STORAGE_KEY_ORIG = "<?= $storageKeyOrig?>";
+                const MAX_SIZE = "<?= $maxSize?>";
+                const storage = localStorage;
+                let errors = {};
+                /* migrate old log if it exists */
+                let stored = storage.getItem(STORAGE_KEY_ORIG);
+                if (stored) {
+                    storage.setItem(STORAGE_KEY, stored);
+                    storage.removeItem(STORAGE_KEY_ORIG);
+                }
+                stored = storage.getItem(STORAGE_KEY);
+                if (stored) {
+                    if (stored.length < MAX_SIZE) {
+                        /* error log structure is awaited here */
+                        errors = JSON.parse(stored);
+                    } else {
+                        /* reset errors on max size (tmp solution to prevent storage overflow) */
+                        errors = {};
+                    }
+                }
+                if (!(URL_CURRENT in errors)) {
+                    errors[URL_CURRENT] = [];
+                }
+                const date = new Date();
+                const row = {date: date, error: msg, file: url, line: line};
+                errors[URL_CURRENT].push(row);
+                const json = JSON.stringify(errors);
+                storage.setItem(STORAGE_KEY, json);
+            };
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
