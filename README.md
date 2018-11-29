@@ -21,6 +21,8 @@ See logs in `${MAGE_ROOT}/var/log/api.log`:
 
 ### Frontend Sample
 
+![front js view](./etc/docs/img/front_js_error.png)
+
 Go to `http://.../fl32log/js/view/`:
 
 ![front js view](./etc/docs/img/front_js_view.png)
@@ -30,26 +32,25 @@ Go to `http://.../fl32log/js/view/`:
 ## Module Configuration
 
 
+### Enable additional logging
+
+See `Store / Configuration / Advanced / System / Advanced Logging Settings`:
+
+![store config](./etc/docs/img/store_config.png)
+
+
 ### Disable "Log JS Errors to Session Storage"
 
+You need to disable "Log JS Errors to Session Storage" that is used for Magento tests (disabled by default).
 See `Store / Configuration / Advanced / Developer / JavaScript Settings / Log JS Errors to Session Storage`:
 
 ![store config disable](./etc/docs/img/store_config_disable.png)
-
-This logging is used for Magento tests and is disabled by default.
 
 Attention: section `Store / Configuration / Advanced / Developer` is available in `developer` mode only:
 
 ```bash
 $ ./bin/magento deploy:mode:set developer
 ```
-
-
-### Enable additional logging
-
-See `Store / Configuration / Advanced / System / Advanced Logging Settings`:
-
-![store config](./etc/docs/img/store_config.png)
 
 
 
