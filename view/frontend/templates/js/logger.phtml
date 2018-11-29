@@ -1,41 +1,30 @@
 <?php
 /**
- * Template to add "window.onerror()" handler to save JS errors in local storage.
+ * Template to add handler to "window.onerror()" & window.console.error to save JS errors in local storage.
  */
 /** @var $block \Flancer32\LogApi\Block\Js\Logger */
 $storageKey = $block->getStorageKey();
-/* TODO: remove tmp solution for backward compatibility */
-$storageKeyOrig = $block->getStorageKeyOrig();
 $maxSize = $block->getLocalStorageMaxSize();
 ?>
 <?php if ($block->isOriginalLoggingEnabled()): ?>
     <!-- Please, disable session storage logging to enable local storage logging for JS errors. -->
     <!-- see "Store / Configuration / Advanced / Developer / JavaScript Settings / Log JS Errors to Session Storage" -->
+    <!-- and "Store / Configuration / Advanced / Developer / JavaScript Settings / Log JS Errors to Session Storage" -->
 <?php else: ?>
     <?php if ($block->isLocalStorageEnabled()): ?>
         <script>
             /**
-             * Save errors to local storage.
+             * Handler to save error into local storage.
              * Structure for error log see in "flancer32/mage2_ext_log_api/etc/js/schema/error.json".
-             *
-             * @param msg
-             * @param url
-             * @param line
              */
-            window.onerror = function (msg, url, line) {
+            const fl32errHndl = function (msg, url, line) {
                 const URL_CURRENT = window.location.href;
                 const STORAGE_KEY = "<?= $storageKey?>";
-                const STORAGE_KEY_ORIG = "<?= $storageKeyOrig?>";
                 const MAX_SIZE = "<?= $maxSize?>";
                 const storage = localStorage;
+
                 let errors = {};
-                /* migrate old log if it exists */
-                let stored = storage.getItem(STORAGE_KEY_ORIG);
-                if (stored) {
-                    storage.setItem(STORAGE_KEY, stored);
-                    storage.removeItem(STORAGE_KEY_ORIG);
-                }
-                stored = storage.getItem(STORAGE_KEY);
+                let stored = storage.getItem(STORAGE_KEY);
                 if (stored) {
                     if (stored.length < MAX_SIZE) {
                         /* error log structure is awaited here */
@@ -54,6 +43,47 @@ $maxSize = $block->getLocalStorageMaxSize();
                 const json = JSON.stringify(errors);
                 storage.setItem(STORAGE_KEY, json);
             };
+
+            /**
+             * Save errors to local storage.
+             *
+             *
+             * @param msg
+             * @param url
+             * @param line
+             */
+            window.onerror = fl32errHndl;
+
+            /**
+             * Wrap "window.console.error"
+             *
+             * See ./lib/web/mage/apply/main.js:36
+             */
+            if ("console" in window && typeof window.console.error === "function") {
+                const oldHandler = window.console.error;
+                /* replace current function with wrapper */
+                window.console.error = function (error) {
+                    let line, url, msg = error;
+                    /* try to parse error object */
+                    if (typeof msg === "object") {
+                        msg = error.toString();
+                        if ("stack" in error && typeof error.stack === "string") {
+                            const lines = error.stack.split("\n");
+                            let secondLine = lines[1];
+                            if (typeof secondLine === "string") {
+                                const parts = secondLine.match(/(\s*)at(\s*)(http(.*)):(\d+):(\d+)/i);
+                                if (parts[3]) url = parts[3];
+                                if (parts[5]) line = parts[5];
+                                if (parts[6]) line += ":" + parts[6];
+
+                            }
+                        }
+                    }
+                    fl32errHndl(msg, url, line);
+                    oldHandler(error);
+                };
+            }
+
         </script>
     <?php endif; ?>
 <?php endif; ?>

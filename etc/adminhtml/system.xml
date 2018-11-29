@@ -20,7 +20,7 @@
                        sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable JS errors logging</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Save JS errors in browser's local storage. See saved errors on '/fl32/logger/jserrors/' page.</comment>
+                    <comment>Save JS errors in browser's local storage. See saved errors on 'http://.../fl32log/js/view/' page.</comment>
                 </field>
             </group>
         </section>
