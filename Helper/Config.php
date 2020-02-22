@@ -23,7 +23,8 @@ class Config
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\App\State $appState
-    ) {
+    )
+    {
         $this->scopeConfig = $scopeConfig;
         $this->appState = $appState;
     }
@@ -52,6 +53,20 @@ class Config
     public function getWebEnabled($scopeType = AScopeCfg::SCOPE_TYPE_DEFAULT, $scopeCode = null)
     {
         $result = $this->scopeConfig->getValue('system/flancer32_log_api/web_enabled', $scopeType, $scopeCode);
+        $result = filter_var($result, FILTER_VALIDATE_BOOLEAN);
+        return $result;
+    }
+
+    /**
+     * Is Logging of request headers activated.
+     *
+     * @param string $scopeType
+     * @param null $scopeCode
+     * @return bool
+     */
+    public function getLogHeaderValues($scopeType = AScopeCfg::SCOPE_TYPE_DEFAULT, $scopeCode = null)
+    {
+        $result = $this->scopeConfig->getValue('system/flancer32_log_api/log_request_headers', $scopeType, $scopeCode);
         $result = filter_var($result, FILTER_VALIDATE_BOOLEAN);
         return $result;
     }
